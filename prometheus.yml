@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'ml-model-monitoring'
+    static_configs:
+      # 'host.docker.internal' digunakan agar Docker bisa mengakses 
+      # aplikasi yang jalan di localhost komputermu
+      - targets: ['host.docker.internal:8000']
