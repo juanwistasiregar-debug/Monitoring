@@ -2,23 +2,22 @@ from prometheus_client import start_http_server, Counter, Histogram, Gauge
 import time
 import random
 
-# 1. Metrik Counter (Jumlah request)
-REQUEST_COUNT = Counter('predict_requests_total', 'Total prediksi')
+# Metrik 1: Counter untuk jumlah request
+REQUEST_COUNT = Counter('model_predictions_total', 'Total jumlah prediksi')
 
-# 2. Metrik Histogram (Latensi)
-LATENCY_BUCKETS = Histogram('predict_latency_seconds', 'Waktu proses')
+# Metrik 2: Histogram untuk durasi prediksi
+PREDICT_LATENCY = Histogram('model_prediction_latency_seconds', 'Waktu proses prediksi')
 
-# 3. Metrik Gauge (Resource/Memory)
-MEM_USAGE = Gauge('predict_memory_usage_bytes', 'Penggunaan memori')
+# Metrik 3: Gauge untuk memori
+MEMORY_USAGE = Gauge('model_memory_usage_bytes', 'Penggunaan memori model')
 
-def process_inference():
-    with LATENCY_BUCKETS.time():
-        REQUEST_COUNT.inc()
-        # Simulasi proses
-        time.sleep(random.uniform(0.1, 0.5))
-        MEM_USAGE.set(random.randint(500, 1000))
+def run_model():
+    with PREDICT_LATENCY.time(): # Mengukur latency
+        REQUEST_COUNT.inc() # Menambah hitungan
+        MEMORY_USAGE.set(random.uniform(100, 500)) # Simulasi penggunaan RAM
+        time.sleep(random.uniform(0.1, 0.8))
 
 if __name__ == '__main__':
-    start_http_server(8000)
+    start_http_server(8000) # Endpoint untuk Prometheus
     while True:
-        process_inference()
+        run_model()
